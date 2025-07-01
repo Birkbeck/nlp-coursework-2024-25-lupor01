@@ -21,51 +21,50 @@ nlp = spacy.load("en_core_web_sm")
 nlp.max_length = 2000000
 
 
-def fk_level(text, d):
-    """Returns the Flesch-Kincaid Grade Level of a text (higher grade is more difficult).
-    Requires a dictionary of syllables per word.
-
-    Args:
-        text (str): The text to analyze.
-        d (dict): A dictionary of syllables per word.
-
-    Returns:
-        float: The Flesch-Kincaid Grade Level of the text. (higher grade is more difficult)
-    """
+def fk_level(df):
+    
     cmu = cmudict.dict()
 
-    sentences = len(sent_tokenize(text))
-    tokens = [
-        token for token in word_tokenize(text)
-        if token not in punctuation
-    ]
-    syllables = 0
-    for token in tokens:
-        token = token.lower()
-        if token in cmu:
-            pronunciations = cmu[token]
-            counts = [
-                len([pho for pho in p if pho[-1].isdigit()])
-                for p in pronunciations
-            ]
-            syllables += sum(counts) / len(counts)
-        #else????
-    flesch = .39 * (len(tokens)/sentences) + 11.8 * (syllables/len(tokens)) - 15.59
+    flesch_dict = {}
+    for _, row in df.iterrows():
+        text = row["text"]
+        title = row["title"]
 
-    return flesch
+        sentences = len(sent_tokenize(text))
+        tokens = [
+            token for token in word_tokenize(text)
+            if token not in punctuation
+        ]
 
-def count_syl(word, d):
-    """Counts the number of syllables in a word given a dictionary of syllables per word.
-    if the word is not in the dictionary, syllables are estimated by counting vowel clusters
+        syllables = 0
+        for token in tokens:
+            token = token.lower()
+            if token in cmu:
+                pronunciations = cmu[token]
+                counts = [
+                    len([pho for pho in p if pho[-1].isdigit()])
+                    for p in pronunciations
+                ]
+                syllables += sum(counts) / len(counts)
+            #else????
+        flesch = .39 * (len(tokens)/sentences) + 11.8 * (syllables/len(tokens)) - 15.59
 
-    Args:
-        word (str): The word to count syllables for.
-        d (dict): A dictionary of syllables per word.
+        flesch_dict[title] = round(flesch, 3)
 
-    Returns:
-        int: The number of syllables in the word.
-    """
-    pass
+    return flesch_dict
+
+# def count_syl(word, d):
+#     """Counts the number of syllables in a word given a dictionary of syllables per word.
+#     if the word is not in the dictionary, syllables are estimated by counting vowel clusters
+
+#     Args:
+#         word (str): The word to count syllables for.
+#         d (dict): A dictionary of syllables per word.
+
+#     Returns:
+#         int: The number of syllables in the word.
+#     """
+#     pass
 
 ## I started working on the coursework before seeing the template on git.
 ## I tried using Path.cwd, but it does not seem to work for me,
@@ -127,13 +126,13 @@ def get_ttrs(df):
     return results
 
 
-def get_fks(df):
-    """helper function to add fk scores to a dataframe"""
-    results = {}
-    cmudict = nltk.corpus.cmudict.dict()
-    for i, row in df.iterrows():
-        results[row["title"]] = round(fk_level(row["text"], cmudict), 4)
-    return results
+# def get_fks(df):
+#     """helper function to add fk scores to a dataframe"""
+#     results = {}
+#     cmudict = nltk.corpus.cmudict.dict()
+#     for i, row in df.iterrows():
+#         results[row["title"]] = round(fk_level(row["text"], cmudict), 4)
+#     return results
 
 
 def subjects_by_verb_pmi(doc, target_verb):
@@ -169,7 +168,7 @@ if __name__ == "__main__":
     # parse(df)
     # print(df.head())
     # print(get_ttrs(df))
-    # print(get_fks(df))
+    # print(fk_level(df))
     # df = pd.read_pickle(Path.cwd() / "pickles" /"name.pickle")
     # print(adjective_counts(df))
     """ 
