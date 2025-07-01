@@ -198,3 +198,5 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
+*.pkl
+*.pickle

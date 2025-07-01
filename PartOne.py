@@ -101,15 +101,18 @@ def read_novels(pathway):
 
 # print(read_novels(path_novels).loc[:, ["title", "year"]])
 
-def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
-    """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
-    the resulting  DataFrame to a pickle file"""
-    df["tokens"] = df["text"].apply(nlp.tokenizer)
+# def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pkl"):
+#     """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
+#     the resulting  DataFrame to a pickle file"""
+#     df["tokens"] = df["text"].apply(nlp.tokenizer)
+    
+#     # need to make sure the directory exists
+#     store_path.mkdir(parents = True, exist_ok = True)
 
-    with open(store_path/out_name, "wb") as file:
-        pickle.dump(df, file)
+#     with open(store_path/out_name, "wb") as file:
+#         pickle.dump(df, file)
 
-    return df
+#     return df
 
 
 def nltk_ttr(text):
@@ -168,12 +171,13 @@ if __name__ == "__main__":
     """
     data_folder = "/Users/rick/Desktop/MSc/4 - NLP/0, assessment"
     path_novels = f"{data_folder}/p1-texts/novels"
+
     print(path_novels)
     df = read_novels(path_novels) # this line will fail until you have completed the read_novels function above.
     print(df.head(5))
     # nltk.download("cmudict")
     # parse(df)
-    # print(df.head())
+    print(df.head())
     print(get_ttrs(df))
     print(fk_level(df))
     # df = pd.read_pickle(Path.cwd() / "pickles" /"name.pickle")
