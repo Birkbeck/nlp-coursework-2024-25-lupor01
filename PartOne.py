@@ -8,9 +8,10 @@
 import os
 import glob
 from pathlib import Path
+import pickle
 import pandas as pd
-from nltk.corpus import cmudict
 
+from nltk.corpus import cmudict
 from string import punctuation
 from nltk import word_tokenize, sent_tokenize
 import spacy
@@ -27,8 +28,8 @@ def fk_level(df):
 
     flesch_dict = {}
     for _, row in df.iterrows():
-        text = row["text"]
-        title = row["title"]
+        
+        text, title = row["text"], row["title"]
 
         sentences = len(sent_tokenize(text))
         tokens = [
@@ -66,6 +67,7 @@ def fk_level(df):
 #     """
 #     pass
 
+
 ## I started working on the coursework before seeing the template on git.
 ## I tried using Path.cwd, but it does not seem to work for me,
 ## so I stuck to my original version – it just requires the explicit pathway.
@@ -102,7 +104,12 @@ def read_novels(pathway):
 def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
     """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
     the resulting  DataFrame to a pickle file"""
-    pass
+    df["tokens"] = df["text"].apply(nlp.tokenizer)
+
+    with open(store_path/out_name, "wb") as file:
+        pickle.dump(df, file)
+
+    return df
 
 
 def nltk_ttr(text):
@@ -167,8 +174,8 @@ if __name__ == "__main__":
     # nltk.download("cmudict")
     # parse(df)
     # print(df.head())
-    # print(get_ttrs(df))
-    # print(fk_level(df))
+    print(get_ttrs(df))
+    print(fk_level(df))
     # df = pd.read_pickle(Path.cwd() / "pickles" /"name.pickle")
     # print(adjective_counts(df))
     """ 
