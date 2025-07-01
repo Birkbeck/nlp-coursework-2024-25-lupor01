@@ -50,18 +50,14 @@ def count_syl(word, d):
     pass
 
 
-def read_novels(pathway):
-    # I started to work on coursework before seeing the template on git.
-    # I decided to retain my version – instead of path.cwd(), it uses glob.glob(os.path.join()) as seen in lab1's slides
-    files = glob.glob(os.path.join(pathway, "*.txt"))
+def read_novels(pathway = Path.cwd() / "texts" / "novels"):
 
     texts, titles, authors, years = [], [], [], []
 
-    for file in files:
+    for file in pathway.glob("*.txt"):
         with open(file, "r", encoding = "utf-8") as text:
             texts.append(text.read())
-        filename = os.path.basename(file)  # get the filename.txt
-        filename = filename.rsplit(".", 1) [0]  # removing ".txt"
+        filename = file.stem
         components = filename.split("-")  # title[0], author[1], year[2]
 
         titles.append(components[0].replace("_", " "))
@@ -79,7 +75,7 @@ def read_novels(pathway):
 
     return df.sort_values(by = "year", ascending = True) 
 
-# print(read_novels(path_novels).loc[:, ["title", "year"]])
+print(read_novels().loc[:, ["title", "year"]])
 
 def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
     """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
@@ -108,8 +104,7 @@ def nltk_ttr(df: pd.DataFrame):
     
     return ttr_dict
 
-df = read_novels(path_novels)
-print(nltk_ttr(df))
+
 
 def get_ttrs(df):
     """helper function to add ttr to a dataframe"""
@@ -152,16 +147,16 @@ if __name__ == "__main__":
     """
     uncomment the following lines to run the functions once you have completed them
     """
-    #path = Path.cwd() / "p1-texts" / "novels"
-    #print(path)
-    #df = read_novels(path) # this line will fail until you have completed the read_novels function above.
-    #print(df.head())
-    #nltk.download("cmudict")
-    #parse(df)
-    #print(df.head())
-    #print(get_ttrs(df))
-    #print(get_fks(df))
-    #df = pd.read_pickle(Path.cwd() / "pickles" /"name.pickle")
+    # path = Path.cwd() / "p1-texts" / "novels"
+    # print(path)
+    # df = read_novels(path) # this line will fail until you have completed the read_novels function above.
+    # print(df.head())
+    # nltk.download("cmudict")
+    # parse(df)
+    # print(df.head())
+    # print(get_ttrs(df))
+    # print(get_fks(df))
+    # df = pd.read_pickle(Path.cwd() / "pickles" /"name.pickle")
     # print(adjective_counts(df))
     """ 
     for i, row in df.iterrows():
