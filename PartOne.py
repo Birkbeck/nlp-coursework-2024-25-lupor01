@@ -50,14 +50,17 @@ def count_syl(word, d):
     pass
 
 
-def read_novels(pathway = Path.cwd() / "texts" / "novels"):
+def read_novels(pathway):
+
+    files = glob.glob(os.path.join(pathway, "*.txt"))
 
     texts, titles, authors, years = [], [], [], []
 
-    for file in pathway.glob("*.txt"):
+    for file in files:
         with open(file, "r", encoding = "utf-8") as text:
             texts.append(text.read())
-        filename = file.stem
+        filename = os.path.basename(file)
+        filename = filename.rsplit(".", 1) [0]
         components = filename.split("-")  # title[0], author[1], year[2]
 
         titles.append(components[0].replace("_", " "))
@@ -75,7 +78,7 @@ def read_novels(pathway = Path.cwd() / "texts" / "novels"):
 
     return df.sort_values(by = "year", ascending = True) 
 
-print(read_novels().loc[:, ["title", "year"]])
+print(read_novels(path_novels).loc[:, ["title", "year"]])
 
 def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
     """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
