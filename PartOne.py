@@ -10,7 +10,7 @@ import glob
 import pandas as pd
 import nltk
 import spacy
-# from pathlib import Path
+from pathlib import Path
 
 
 nlp = spacy.load("en_core_web_sm")
@@ -56,15 +56,15 @@ def read_novels(pathway):
     texts, titles, authors, years = [], [], [], []
 
     for file in files:
-        with open(file, "r", endoding = "utf-8") as text:
+        with open(file, "r", encoding = "utf-8") as text:
             texts.append(text.read())
         name = os.path.basename(file)
         name = name.rsplit(",", 1) [0]
         components = name.split("-")  # title[0], author[1], year[2]
 
-        titles.append()
-        authors.append()
-        years.append()
+        titles.append(components[0].replace("_", " "))
+        authors.append(components[1])
+        years.append(components[2])
     
     data = {
         "text": texts,
@@ -76,6 +76,8 @@ def read_novels(pathway):
     df = pd.DataFrame(data)  # earliest first!!
 
     return df.sort_values(by = "year", ascending = True) 
+
+print(read_novels(path_novels).loc[:, ["title", "year"]])
 
 def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
     """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
