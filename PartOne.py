@@ -5,9 +5,12 @@
 
 # Note: The template functions here and the dataframe format for structuring your solution is a suggested but not mandatory approach. You can use a different approach if you like, as long as you clearly answer the questions and communicate your answers clearly.
 
+import os
+import glob
+import pandas as pd
 import nltk
 import spacy
-from pathlib import Path
+# from pathlib import Path
 
 
 nlp = spacy.load("en_core_web_sm")
@@ -45,11 +48,34 @@ def count_syl(word, d):
     pass
 
 
-def read_novels(path=Path.cwd() / "texts" / "novels"):
-    """Reads texts from a directory of .txt files and returns a DataFrame with the text, title,
-    author, and year"""
-    pass
+def read_novels(pathway):
+    # I started to work on coursework before seeing the template on git.
+    # I decided to retain my version – instead of path.cwd(), it uses glob.glob(os.path.join()) as seen in lab1's slides
+    files = glob.glob(os.path.join(pathway, "*.txt"))
 
+    texts, titles, authors, years = [], [], [], []
+
+    for file in files:
+        with open(file, "r", endoding = "utf-8") as text:
+            texts.append(text.read())
+        name = os.path.basename(file)
+        name = name.rsplit(",", 1) [0]
+        components = name.split("-")  # title[0], author[1], year[2]
+
+        titles.append()
+        authors.append()
+        years.append()
+    
+    data = {
+        "text": texts,
+        "title": titles,
+        "author": authors,
+        "year": years
+    }
+
+    df = pd.DataFrame(data)  # earliest first!!
+
+    return df.sort_values(by = "year", ascending = True) 
 
 def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
     """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
