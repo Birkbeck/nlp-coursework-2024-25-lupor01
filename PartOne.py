@@ -8,6 +8,8 @@
 import os
 import glob
 import pandas as pd
+
+from string import punctuation
 import nltk
 import spacy
 from pathlib import Path
@@ -58,9 +60,9 @@ def read_novels(pathway):
     for file in files:
         with open(file, "r", encoding = "utf-8") as text:
             texts.append(text.read())
-        name = os.path.basename(file)
-        name = name.rsplit(".", 1) [0]
-        components = name.split("-")  # title[0], author[1], year[2]
+        filename = os.path.basename(file)  # get the filename.txt
+        filename = filename.rsplit(".", 1) [0]  # removing ".txt"
+        components = filename.split("-")  # title[0], author[1], year[2]
 
         titles.append(components[0].replace("_", " "))
         authors.append(components[1])
@@ -77,7 +79,7 @@ def read_novels(pathway):
 
     return df.sort_values(by = "year", ascending = True) 
 
-print(read_novels(path_novels).loc[:, ["title", "year"]])
+# print(read_novels(path_novels).loc[:, ["title", "year"]])
 
 def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
     """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
@@ -85,10 +87,29 @@ def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
     pass
 
 
-def nltk_ttr(text):
+def nltk_ttr(df: pd.DataFrame):
     """Calculates the type-token ratio of a text. Text is tokenized using nltk.word_tokenize."""
-    pass
+    ttr_dict = {}
+    for _, row in df.iterrows():
+        title = row["title"]
+        text = row["text"]
 
+        tokens = nltk.word_tokenize(text)
+        tokens = [
+            token.lower() for token in tokens
+            if token not in punctuation
+        ]
+
+        tot_tokens = len(tokens)
+        unique_tokens = len(set(tokens))
+        ttr = unique_tokens / tot_tokens
+
+        ttr_dict[title] = ttr
+    
+    return ttr_dict
+
+df = read_novels(path_novels)
+print(nltk_ttr(df))
 
 def get_ttrs(df):
     """helper function to add ttr to a dataframe"""
