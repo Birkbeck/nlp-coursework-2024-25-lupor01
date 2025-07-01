@@ -49,8 +49,10 @@ def count_syl(word, d):
     """
     pass
 
-
-def read_novels(pathway):
+## I started working on the coursework before seeing the template on git.
+## I tried using Path.cwd, but it does not seem to work for me,
+## so I stuck to my original version – it just requires the explicit pathway.
+def read_novels(pathway): 
 
     files = glob.glob(os.path.join(pathway, "*.txt"))
 
