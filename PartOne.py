@@ -13,7 +13,9 @@ from pathlib import Path
 nlp = spacy.load("en_core_web_sm")
 nlp.max_length = 2000000
 
-
+data_folder = "/Users/rick/Desktop/MSc/4 - NLP/0, assessment"
+path_novels = f"{data_folder}/p1-texts/novels"
+path_speeches = f"{data_folder}/p2-texts/hansard40000.csv"
 
 def fk_level(text, d):
     """Returns the Flesch-Kincaid Grade Level of a text (higher grade is more difficult).
@@ -92,6 +94,8 @@ def subjects_by_verb_count(doc, verb):
 def adjective_counts(doc):
     """Extracts the most common adjectives in a parsed document. Returns a list of tuples."""
     pass
+
+
 
 
 
