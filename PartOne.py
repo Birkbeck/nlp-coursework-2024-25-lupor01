@@ -7,12 +7,14 @@
 
 import os
 import glob
+from pathlib import Path
 import pandas as pd
+from nltk.corpus import cmudict
 
 from string import punctuation
 import nltk
 import spacy
-from pathlib import Path
+
 
 
 nlp = spacy.load("en_core_web_sm")
@@ -85,27 +87,17 @@ def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
     pass
 
 
-def nltk_ttr(df: pd.DataFrame):
+def nltk_ttr(text):
     """Calculates the type-token ratio of a text. Text is tokenized using nltk.word_tokenize."""
-    ttr_dict = {}
-    for _, row in df.iterrows():
-        title = row["title"]
-        text = row["text"]
+    tokens = nltk.word_tokenize(text)
+    tokens = [
+        token.lower() for token in tokens
+        if token not in punctuation
+    ]
 
-        tokens = nltk.word_tokenize(text)
-        tokens = [
-            token.lower() for token in tokens
-            if token not in punctuation
-        ]
-
-        tot_tokens = len(tokens)
-        unique_tokens = len(set(tokens))
-        ttr = unique_tokens / tot_tokens
-
-        ttr_dict[title] = ttr
-    
-    return ttr_dict
-
+    tot_tokens = len(tokens)
+    unique_tokens = len(set(tokens))
+    return unique_tokens / tot_tokens
 
 
 def get_ttrs(df):
