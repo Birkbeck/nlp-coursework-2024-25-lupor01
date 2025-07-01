@@ -18,9 +18,6 @@ from pathlib import Path
 nlp = spacy.load("en_core_web_sm")
 nlp.max_length = 2000000
 
-data_folder = "/Users/rick/Desktop/MSc/4 - NLP/0, assessment"
-path_novels = f"{data_folder}/p1-texts/novels"
-path_speeches = f"{data_folder}/p2-texts/hansard40000.csv"
 
 def fk_level(text, d):
     """Returns the Flesch-Kincaid Grade Level of a text (higher grade is more difficult).
@@ -80,7 +77,7 @@ def read_novels(pathway):
 
     return df.sort_values(by = "year", ascending = True) 
 
-print(read_novels(path_novels).loc[:, ["title", "year"]])
+# print(read_novels(path_novels).loc[:, ["title", "year"]])
 
 def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
     """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
@@ -152,10 +149,11 @@ if __name__ == "__main__":
     """
     uncomment the following lines to run the functions once you have completed them
     """
-    # path = Path.cwd() / "p1-texts" / "novels"
-    # print(path)
-    # df = read_novels(path) # this line will fail until you have completed the read_novels function above.
-    # print(df.head())
+    data_folder = "/Users/rick/Desktop/MSc/4 - NLP/0, assessment"
+    path_novels = f"{data_folder}/p1-texts/novels"
+    print(path_novels)
+    df = read_novels(path_novels) # this line will fail until you have completed the read_novels function above.
+    print(df.head(5))
     # nltk.download("cmudict")
     # parse(df)
     # print(df.head())
