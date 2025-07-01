@@ -12,7 +12,7 @@ import pandas as pd
 from nltk.corpus import cmudict
 
 from string import punctuation
-import nltk
+from nltk import word_tokenize, sent_tokenize
 import spacy
 
 
@@ -32,8 +32,27 @@ def fk_level(text, d):
     Returns:
         float: The Flesch-Kincaid Grade Level of the text. (higher grade is more difficult)
     """
-    pass
+    cmu = cmudict.dict()
 
+    sentences = len(sent_tokenize(text))
+    tokens = [
+        token for token in word_tokenize(text)
+        if token not in punctuation
+    ]
+    syllables = 0
+    for token in tokens:
+        token = token.lower()
+        if token in cmu:
+            pronunciations = cmu[token]
+            counts = [
+                len([pho for pho in p if pho[-1].isdigit()])
+                for p in pronunciations
+            ]
+            syllables += sum(counts) / len(counts)
+        #else????
+    flesch = .39 * (len(tokens)/sentences) + 11.8 * (syllables/len(tokens)) - 15.59
+
+    return flesch
 
 def count_syl(word, d):
     """Counts the number of syllables in a word given a dictionary of syllables per word.
@@ -89,7 +108,7 @@ def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
 
 def nltk_ttr(text):
     """Calculates the type-token ratio of a text. Text is tokenized using nltk.word_tokenize."""
-    tokens = nltk.word_tokenize(text)
+    tokens = word_tokenize(text)
     tokens = [
         token.lower() for token in tokens
         if token not in punctuation
