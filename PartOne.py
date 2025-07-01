@@ -59,7 +59,7 @@ def read_novels(pathway):
         with open(file, "r", encoding = "utf-8") as text:
             texts.append(text.read())
         name = os.path.basename(file)
-        name = name.rsplit(",", 1) [0]
+        name = name.rsplit(".", 1) [0]
         components = name.split("-")  # title[0], author[1], year[2]
 
         titles.append(components[0].replace("_", " "))
