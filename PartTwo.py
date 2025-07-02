@@ -92,8 +92,8 @@ def my_tokenizer(text: str):
     
 
 vectorizers = [
-    # ("Unigrams only", TfidfVectorizer(stop_words = "english", max_features = 3000)),
-    # ("Unigrams, bigrams and trigrams", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3))),
+    ("Unigrams only", TfidfVectorizer(stop_words = "english", max_features = 3000)),
+    ("Unigrams, bigrams and trigrams", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3))),
     ("Adding my tokenizer", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3), tokenizer = my_tokenizer)),
 ]
 
@@ -117,5 +117,5 @@ for vectorizer in vectorizers:
         pred = model.predict(X_test)
         f1 = metrics.f1_score(y_test, pred, average = "macro")
         print(f"\t• Macro F1 score: {round(f1, 3)}")
-        # print("\n\t• Classification report:\n")
-        # print(metrics.classification_report(y_test, pred, zero_division = 0))
+        print("\n\t• Classification report:\n")
+        print(metrics.classification_report(y_test, pred, zero_division = 0))

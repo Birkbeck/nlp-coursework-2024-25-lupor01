@@ -1,1 +1,6 @@
 Answers to the text questions go here.
+
+PART 1, Flesch-Kincaid
+poetry, jargon, short but diffilult words, long but easy words
+
+PART 2, my_tokenizer
