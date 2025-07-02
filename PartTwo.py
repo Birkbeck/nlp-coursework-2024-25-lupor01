@@ -52,28 +52,48 @@ numpy.random.seed(SEED)
 
 stopwords = set(stopwords.words("english"))
 
+# def my_tokenizer(text: str):
+#     """
+#     - split on whitespaces
+#     - remove puntuation
+#     - remove stopwords
+#     - contractions?!
+#     - lemmatize?!
+#     """
+#     decontracted_text = contractions.fix(text)
+#     tokens = word_tokenize(decontracted_text)
+
+#     return [
+#         word.lower() for word in tokens
+#         if len(word) >2
+#         and word not in stopwords
+#         and word not in punctuation
+#     ]
+
+nlp = spacy.load("en_core_web_sm")
+
 def my_tokenizer(text: str):
     """
-    - split on whitespaces
     - remove puntuation
     - remove stopwords
-    - contractions?!
-    - lemmatize?!
+    - leave out one-character symbols?
+    - smart tokenization with spacy?
     """
-    decontracted_text = contractions.fix(text)
-    tokens = word_tokenize(decontracted_text)
+    doc = nlp(text)
 
     return [
-        word.lower() for word in tokens
-        if len(word) >2
-        and word not in stopwords
-        and word not in punctuation
+        token.text.lower() for token in doc
+        if not token.is_digit
+        # if not token.like_num  # .is_digit better!
+        and not token.is_punct
+        and not token.is_stop
+        and len(token) >1
     ]
     
 
 vectorizers = [
-    ("Unigrams only", TfidfVectorizer(stop_words = "english", max_features = 3000)),
-    ("Unigrams, bigrams and trigrams", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3))),
+    # ("Unigrams only", TfidfVectorizer(stop_words = "english", max_features = 3000)),
+    # ("Unigrams, bigrams and trigrams", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3))),
     ("Adding my tokenizer", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3), tokenizer = my_tokenizer))
 ]
 
