@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import random
 import pandas as pd
 import nltk
 import spacy
@@ -40,3 +41,34 @@ df = df[df["speech"].str.len() >= 1000]
 
 print(df.shape)
 
+
+SEED = 26
+random.seed(SEED)
+
+vectorizers = [
+    ("Unigrams only", TfidfVectorizer(stop_words = "english", max_features = 3000)),
+    ("Unigrams, bigrams and trigrams", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3)))
+]
+
+models = [
+    ("Random Forest", RandomForestClassifier(n_estimators = 300, random_state = SEED)),
+    ("Support Vector Machine", SVC(kernel = "linear"))
+]
+
+for vectorizer in vectorizers:
+    print(f"\n{vectorizer[0]}")
+    features = vectorizer[1].fit_transform(df["speech"])
+    labels = df["party"]
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        features, labels, stratify = labels, random_state = SEED
+    )
+
+    for name, model in models:
+        print("Modelling with {name}")
+        model.fit(X_train, y_train)
+        pred = model.predict(X_test)
+        f1 = metrics.f1_score(y_test, pred, average = "macro")
+        print(f"F1 score: {f1}")
+        print("Classification report:\n")
+        print(metrics.classification_report(y_test, pred))
