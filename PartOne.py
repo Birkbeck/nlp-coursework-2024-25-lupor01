@@ -9,8 +9,9 @@ import os
 import glob
 from pathlib import Path
 import pickle
-import pandas as pd
+from collections import Counter
 
+import pandas as pd
 from nltk.corpus import cmudict
 from string import punctuation
 from nltk import word_tokenize, sent_tokenize
@@ -146,28 +147,43 @@ def get_ttrs(df):
 
 def object_counts(df):
     """Extracts the most common syntactic objects in parsed documents from pd.DataFrame"""
+    # for _, row in df.iterrows():
+    #     text = row["text"]
+    #     title = row["title"]
+    #     tokens = nlp(text)  # make sure nlp is defined!
+
+    #     counts = {}
+    #     for token in tokens:
+    #         if token.dep_ == "dobj": 
+    #             obj = token.text.lower()
+    #             if obj in counts:
+    #                 counts[obj] += 1
+    #             else:
+    #                 counts[obj] = 1
+        
+    #     most_frequent = sorted(
+    #         counts.items(),
+    #         key = lambda item: item[1],
+    #         reverse = True
+    #     )[:10]
+
+    #     print(f"title: {title}")
+    #     print(f"most frequent objects (raw counts): {most_frequent}")
+
+    # more streamlined method??
     for _, row in df.iterrows():
         text = row["text"]
         title = row["title"]
-        tokens = nlp(text)  # make sure nlp is defined!
+        tokens = nlp(text)
 
-        counts = {}
-        for token in tokens:
-            if token.dep_ == "dobj": 
-                obj = token.text.lower()
-                if obj in counts:
-                    counts[obj] += 1
-                else:
-                    counts[obj] = 1
-        
-        most_frequent = sorted(
-            counts.items(),
-            key = lambda item: item[1],
-            reverse = True
-        )[:10]
+        objs = [token.text.lower() for token in tokens if token.dep_ == "dobj"]
+        counts = Counter(objs)
+        frequent_10 = counts.most_common(10)
 
         print(f"title: {title}")
-        print(f"most frequent objects (raw counts): {most_frequent}")
+        print(f"most frequent objects (in raw counts): {[i[0] for i in frequent_10]}")
+
+
 
 def subjects_by_verb_pmi(doc, target_verb):
     """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
