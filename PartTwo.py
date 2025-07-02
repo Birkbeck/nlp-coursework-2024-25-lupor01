@@ -7,6 +7,7 @@ import pandas as pd
 from nltk.corpus import stopwords
 import spacy
 from string import punctuation
+import contractions
 
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -77,7 +78,8 @@ def my_tokenizer(text: str):
     - leave out one-character symbols?
     - smart tokenization with spacy?
     """
-    doc = nlp(text)
+    decontracted_text = contractions.fix(text)
+    doc = nlp(decontracted_text)
 
     return [
         token.text.lower() for token in doc
@@ -90,9 +92,11 @@ def my_tokenizer(text: str):
     
 
 vectorizers = [
-    ("Unigrams only", TfidfVectorizer(stop_words = "english", max_features = 3000)),
-    ("Unigrams, bigrams and trigrams", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3))),
-    ("Adding my tokenizer", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3), tokenizer = my_tokenizer)),
+    # ("Unigrams only", TfidfVectorizer(stop_words = "english", max_features = 3000)),
+    # ("Unigrams, bigrams and trigrams", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3))),
+    ("Adding my tokenizer (uni/bi/trigrams)", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3), tokenizer = my_tokenizer)),
+    ("Adding my tokenizer (bi/trigrams)", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (2, 3), tokenizer = my_tokenizer)),
+    ("Adding my tokenizer (tri/quadrigrams)", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (3, 4), tokenizer = my_tokenizer))
 ]
 
 models = [
@@ -115,5 +119,5 @@ for vectorizer in vectorizers:
         pred = model.predict(X_test)
         f1 = metrics.f1_score(y_test, pred, average = "macro")
         print(f"\t• Macro F1 score: {round(f1, 3)}")
-        print("\n\t• Classification report:\n")
-        print(metrics.classification_report(y_test, pred, zero_division = 0))
+        # print("\n\t• Classification report:\n")
+        # print(metrics.classification_report(y_test, pred, zero_division = 0))

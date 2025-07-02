@@ -1,6 +1,10 @@
 Answers to the text questions go here.
 
+##################################################################################
+##################################################################################
+
 PART 1, Flesch-Kincaid
+
 Firstly, FK may produce poor estimates due to the unreliability of syllable
 number as a proxy for word difficulty. Longer words tend to refer to more
 complex concepts. However, this is not always true.
@@ -15,5 +19,31 @@ it influences the resulting estimation. In fact, the same text will correspond
 to different FK scores depending on punctuation choices – i.e., resulting 
 sentence length.
 
+##################################################################################
+##################################################################################
 
 PART 2, my_tokenizer
+
+def my_tokenizer(text: str):
+    decontracted_text = contractions.fix(text)
+    doc = nlp(text)
+
+    return [
+        token.text.lower() for token in doc
+        if not token.is_digit
+        # if not token.like_num  # .is_digit better!
+        and not token.is_punct
+        and not token.is_stop
+        and len(token) >1
+    ]
+
+This is a simple tokenizer inspired by TfidfVectorizer's default processing.
+The default setting recognises tokens based on the regular expression r”(?u)\b\w\w+\b”,
+indicating as token any group of two or more unicode (alphanumeric) characters.
+Punctuation is always treated as a token separator and ignored. For my_tokenizer,
+I used the same principles but added better language understanding to
+handle contractions. contractions.fix() was used to expand abbreviations, while spacy.nlp
+allowed to easily remove punctuation, stopwords, numeric characters and one-character tokens in general.
+
+Ultimately, my_tokenizer improved RandomForest F1 score, while slightly decreasing
+SVM F1 score 
