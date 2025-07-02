@@ -184,16 +184,49 @@ def object_counts(df):
         print(f"most frequent objects (in raw counts): {[i[0] for i in frequent_10]}")
 
 
+def subjects_by_verb_count(df, verb):
+    """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
+    def standardised_verb(v):
+        v = v.lower()
+        if v.startswith("to "):      # likely useless..but fun and more robust
+            v = v[3:]
+        doc = nlp(v)
+        verb = doc[0]
+        return verb.lemma_
+    
+    st_verb = standardised_verb(verb)
 
-def subjects_by_verb_pmi(doc, target_verb):
+    for _, row in df.iterrows():
+        text = row["text"]
+        title = row["title"]
+        tokens = nlp(text)
+
+        target_verbs = [
+            token for token in tokens
+            if token.lemma_ == st_verb
+            and token.pos_ == "VERB"
+        ]
+
+        subjects = []
+        for token in target_verbs:
+            subjects.extend([
+                child.text.lower()
+                for child in token.children
+                if child.dep_ == "nsubj"
+            ])
+
+        counts = Counter(subjects)  #careful, needs strings!
+
+        frequent_10 = counts.most_common(10)
+        print(f"title: {title}")
+        print(f"most frequent subjects of '{verb}': {[i[0] for i in frequent_10]}")
+
+
+def subjects_by_verb_pmi(df, target_verb):
     """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
     pass
 
 
-
-def subjects_by_verb_count(doc, verb):
-    """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
-    pass
 
 
 
@@ -220,6 +253,7 @@ if __name__ == "__main__":
     df_final = pd.read_pickle(Path.cwd() / "pickles" /"parsed.pkl")
     print(df_final.head(3))  # delete when you're done ⛔️
     print(f"\nMost common syntactic objects per novel\n{object_counts(df_final)}")
+    print(f"\nMost common subjects of 'to hear' per novel\n{subjects_by_verb_count(df_final, "hear")}")
     # print(adjective_counts(df_final))
     """ 
     for i, row in df.iterrows():
