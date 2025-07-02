@@ -1,7 +1,3 @@
-#Re-assessment template 2025
-
-# Note: The template functions here and the dataframe format for structuring your solution is a suggested but not mandatory approach. You can use a different approach if you like, as long as you clearly answer the questions and communicate your answers clearly.
-
 import os
 import glob
 from pathlib import Path
@@ -15,17 +11,20 @@ from string import punctuation
 from nltk import word_tokenize, sent_tokenize
 import spacy
 
-
+## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+## I started working on the assignment before checking the template on git.
+## I tried using Path.cwd to load the initial data, but it didn't seem to
+## work for me (it is like the files are not recognised when I transfer 
+## them into the repo). Therefore, I kept my original version – it just requires
+## the explicit pathway.
+## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 nlp = spacy.load("en_core_web_sm")
 nlp.max_length = 2000000
 
 
 def read_novels(pathway):
-    """ creates a pd.DataFrame as specified in the assignment"""
-    ## I started working on the coursework before checking the template on git.
-    ## I tried using Path.cwd, but it didn't seem to work for me,
-    ## so I kept my original version – it just requires the explicit pathway.
+    """ creates a pd.DataFrame as per assignment specs"""
     
     files = glob.glob(os.path.join(pathway, "*.txt"))
 
