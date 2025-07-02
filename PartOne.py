@@ -180,8 +180,8 @@ if __name__ == "__main__":
     print(df.head())
     print(get_ttrs(df))
     print(fk_level(df))
-    df_final = pd.read_pickle(Path.cwd() / "pickles" /"parsed.pickle")
-    print(df_final)  # delete when you're done ⛔️
+    df_final = pd.read_pickle(Path.cwd() / "pickles" /"parsed.pkl")
+    print(df_final.head(3))  # delete when you're done ⛔️
     # print(adjective_counts(df_final))
     """ 
     for i, row in df.iterrows():
