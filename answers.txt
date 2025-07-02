@@ -48,12 +48,13 @@ handle contractions. contractions.fix() was used to expand abbreviations, while 
 allowed to easily remove punctuation, stopwords, numeric characters and one-character tokens in general.
 
 Adding my_tokenizer improved RandomForest F1 score, while slightly decreasing
-SVM F1 score (this original implementation has been commented out). Ultimately,
-the best performance was obtained by changing the ngram parameter to
-only consider bi to trigrams. Focussing on broader n-gram configurations allows to 
-capture more sentence-level structure. Better classification for both RandomForest
-and SVC might mean that single words are too noisy for this specific task, and 
-wider context may be more meaningful for speech classification based on political party.
+SVM F1 score (this original implementation has been commented out).
+The best performance was obtained by keeping my_tokenizer and changing the
+ngram parameter in TfidfVectorizer to only consider bi to trigrams.
+Focussing on broader n-gram configurations allows to capture more sentence-level
+structure, which might be useful when single words are too noisy in a specific
+task. Higher classification performance across classifiers suggests that wider
+context may be more meaningful for speech classification based on political party.
 
 
 1. Freelance, M. (2021) The Flesch-Kincaid Test is Flawed and We should Stop Using It.
