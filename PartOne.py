@@ -222,7 +222,7 @@ def subjects_by_verb_count(df, verb):
 
         frequent_10 = counts.most_common(10)
         print(f"title: {title}")
-        print(f"{[i[0] for i in frequent_10]}")
+        print(f"{[i for i in frequent_10]}")
 
 
 def subjects_by_verb_pmi(df, verb):
@@ -267,7 +267,7 @@ def subjects_by_verb_pmi(df, verb):
         )[:10]
 
         print(f"title: {title}")
-        print(f"{[i[0] for i in top_pmi]}")
+        print(f"{[i for i in top_pmi]}")
 
 
 
@@ -293,8 +293,11 @@ if __name__ == "__main__":
     # print(f"\nMost common syntactic objects per novel")
     # object_counts(df_final)
     
-    # print("\nMost common subjects of the verb 'to hear', per novel, in descending frequency")
+    # print("\nMost common subjects of the verb 'to hear', per novel, by descending frequency")
     # subjects_by_verb_count(df_final, 'hear')
+
+    print("\nMost common subjects of the verb 'to hear', per novel, by descending PMI")
+    subjects_by_verb_pmi(df_final, 'hear')
 
     # print(adjective_counts(df_final))
     """ 
