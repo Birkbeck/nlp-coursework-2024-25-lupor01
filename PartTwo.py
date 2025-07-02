@@ -92,11 +92,11 @@ def my_tokenizer(text: str):
     
 
 vectorizers = [
-    # ("Unigrams only", TfidfVectorizer(stop_words = "english", max_features = 3000)),
-    # ("Unigrams, bigrams and trigrams", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3))),
-    ("Adding my tokenizer (uni/bi/trigrams)", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3), tokenizer = my_tokenizer)),
-    ("Adding my tokenizer (bi/trigrams)", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (2, 3), tokenizer = my_tokenizer)),
-    ("Adding my tokenizer (tri/quadrigrams)", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (3, 4), tokenizer = my_tokenizer))
+    ("Unigrams only", TfidfVectorizer(stop_words = "english", max_features = 3000)),
+    ("Unigrams, bigrams and trigrams", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3))),
+    ("Adding my tokenizer (uni/bi/trigrams)", TfidfVectorizer(stop_words = None, max_features = 3000, ngram_range = (1, 3), tokenizer = my_tokenizer)),
+    ("Adding my tokenizer (bi/trigrams)", TfidfVectorizer(stop_words = None, max_features = 3000, ngram_range = (2, 3), tokenizer = my_tokenizer)),
+    ("Adding my tokenizer (tri/quadrigrams)", TfidfVectorizer(stop_words = None, max_features = 3000, ngram_range = (3, 4), tokenizer = my_tokenizer))
 ]
 
 models = [
