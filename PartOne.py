@@ -1,7 +1,4 @@
 #Re-assessment template 2025
-#just a line for first commit..let's see if it works...
-# still trying to see if commiting/pushing works..
-
 
 # Note: The template functions here and the dataframe format for structuring your solution is a suggested but not mandatory approach. You can use a different approach if you like, as long as you clearly answer the questions and communicate your answers clearly.
 
@@ -55,19 +52,6 @@ def fk_level(df):
         flesch_dict[title] = round(flesch, 3)
 
     return flesch_dict
-
-# def count_syl(word, d):
-#     """Counts the number of syllables in a word given a dictionary of syllables per word.
-#     if the word is not in the dictionary, syllables are estimated by counting vowel clusters
-
-#     Args:
-#         word (str): The word to count syllables for.
-#         d (dict): A dictionary of syllables per word.
-
-#     Returns:
-#         int: The number of syllables in the word.
-#     """
-#     pass
 
 
 ## I started working on the coursework before seeing the template on git.
@@ -290,25 +274,12 @@ if __name__ == "__main__":
     df_final = pd.read_pickle(Path.cwd() / "pickles" /"parsed.pkl")
     print(df_final.head(3))  # delete when you're done ⛔️
     
-    # print(f"\nMost common syntactic objects per novel")
-    # object_counts(df_final)
+    print(f"\nMost common syntactic objects per novel")
+    object_counts(df_final)
     
-    # print("\nMost common subjects of the verb 'to hear', per novel, by descending frequency")
-    # subjects_by_verb_count(df_final, 'hear')
+    print("\nMost common subjects of the verb 'to hear', per novel, by descending frequency")
+    subjects_by_verb_count(df_final, 'hear')
 
     print("\nMost common subjects of the verb 'to hear', per novel, by descending PMI")
     subjects_by_verb_pmi(df_final, 'hear')
-
-    # print(adjective_counts(df_final))
-    """ 
-    for i, row in df.iterrows():
-        print(row["title"])
-        print(subjects_by_verb_count(row["parsed"], "hear"))
-        print("\n")
-
-    for i, row in df.iterrows():
-        print(row["title"])
-        print(subjects_by_verb_pmi(row["parsed"], "hear"))
-        print("\n")
-    """
 
