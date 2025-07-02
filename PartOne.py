@@ -47,7 +47,7 @@ def fk_level(df):
                     for p in pronunciations
                 ]
                 syllables += sum(counts) / len(counts)
-            #else????
+            #else???? # you can probably assume token in cmu..
         flesch = .39 * (len(tokens)/sentences) + 11.8 * (syllables/len(tokens)) - 15.59
 
         flesch_dict[title] = round(flesch, 3)
@@ -144,6 +144,30 @@ def get_ttrs(df):
 #         results[row["title"]] = round(fk_level(row["text"], cmudict), 4)
 #     return results
 
+def object_counts(df):
+    """Extracts the most common syntactic objects in parsed documents from pd.DataFrame"""
+    for _, row in df.iterrows():
+        text = row["text"]
+        title = row["title"]
+        tokens = nlp(text)  # make sure nlp is defined!
+
+        counts = {}
+        for token in tokens:
+            if token.dep_ == "dobj": 
+                obj = token.text.lower()
+                if obj in counts:
+                    counts[obj] += 1
+                else:
+                    counts[obj] = 1
+        
+        most_frequent = sorted(
+            counts.items(),
+            key = lambda item: item[1],
+            reverse = True
+        )[:10]
+
+        print(f"title: {title}")
+        print(f"most frequent objects (raw counts): {most_frequent}")
 
 def subjects_by_verb_pmi(doc, target_verb):
     """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
@@ -157,9 +181,6 @@ def subjects_by_verb_count(doc, verb):
 
 
 
-def adjective_counts(doc):
-    """Extracts the most common adjectives in a parsed document. Returns a list of tuples."""
-    pass
 
 
 
@@ -173,15 +194,16 @@ if __name__ == "__main__":
     path_novels = f"{data_folder}/p1-texts/novels"
 
     print(path_novels)
-    df = read_novels(path_novels) # this line will fail until you have completed the read_novels function above.
-    print(df.head(5))
-    # nltk.download("cmudict")
-    parse(df)
-    print(df.head())
-    print(get_ttrs(df))
-    print(fk_level(df))
+    # df = read_novels(path_novels) # this line will fail until you have completed the read_novels function above.
+    # print(df.head(5))
+    # # nltk.download("cmudict")
+    # parse(df)
+    # print(df.head())
+    # print(get_ttrs(df))
+    # print(fk_level(df))
     df_final = pd.read_pickle(Path.cwd() / "pickles" /"parsed.pkl")
     print(df_final.head(3))  # delete when you're done ⛔️
+    print(f"\nMost common syntactic objects per novel\n{object_counts(df_final)}")
     # print(adjective_counts(df_final))
     """ 
     for i, row in df.iterrows():
