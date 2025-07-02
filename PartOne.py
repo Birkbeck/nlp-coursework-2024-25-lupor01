@@ -101,18 +101,18 @@ def read_novels(pathway):
 
 # print(read_novels(path_novels).loc[:, ["title", "year"]])
 
-# def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pkl"):
-#     """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
-#     the resulting  DataFrame to a pickle file"""
-#     df["tokens"] = df["text"].apply(nlp.tokenizer)
+def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pkl"):
+    """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
+    the resulting  DataFrame to a pickle file"""
+    df["tokens"] = df["text"].apply(nlp.tokenizer)
     
-#     # need to make sure the directory exists
-#     store_path.mkdir(parents = True, exist_ok = True)
+    # need to make sure the directory exists
+    store_path.mkdir(parents = True, exist_ok = True)
 
-#     with open(store_path/out_name, "wb") as file:
-#         pickle.dump(df, file)
+    with open(store_path/out_name, "wb") as file:
+        pickle.dump(df, file)
 
-#     return df
+    return df
 
 
 def nltk_ttr(text):
