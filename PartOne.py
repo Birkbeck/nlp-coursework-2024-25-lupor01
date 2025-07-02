@@ -11,6 +11,7 @@ from pathlib import Path
 import pickle
 from collections import Counter
 
+from math import log
 import pandas as pd
 from nltk.corpus import cmudict
 from string import punctuation
@@ -184,15 +185,17 @@ def object_counts(df):
         print(f"{[i[0] for i in frequent_10]}")
 
 
-def subjects_by_verb_count(df, verb):
-    """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
-    def standardised_verb(v):
-        v = v.lower()
+def standardised_verb(v):
+        """ helper fuction for subjects_by_verb_count and subjects_by_verb_pmi"""
         if v.startswith("to "):      # useless here..but slightly more robust
             v = v[3:]
         doc = nlp(v)
         verb = doc[0]
         return verb.lemma_
+
+
+def subjects_by_verb_count(df, verb):
+    """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
     
     st_verb = standardised_verb(verb)
 
@@ -224,23 +227,47 @@ def subjects_by_verb_count(df, verb):
 
 def subjects_by_verb_pmi(df, verb):
     """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
+    
+    st_verb = standardised_verb(verb)
+    
     for _, row in df.iterrows():
         text = row["text"]
         title = row["title"]
         doc = nlp(text)
 
-        doc_counts = Counter(doc)
+        text_tokens = [token.text.lower() for token in doc]
+        tot_tokens = len(text_tokens)
+                                                # Counter needs hashable objects
+        doc_counts = Counter(text_tokens)  # can't do Counter(doc), use Counter(tokens.text)
         bigram_counts = Counter()
-        verb_counts = Counter()
+        verb_count = 0
 
-        for toke in doc:
-            if token.pos_ ==
+        for token in doc:
+            if token.pos_ == "VERB" and token.lemma_ == st_verb:
+                for child in token.children:
+                    if child.dep_ == "nsubj":
+                        subject = child.text.lower()
+                        bigram_counts[subject] += 1
 
+                verb_count += 1
+        
+        p_verb = verb_count / tot_tokens # doesn't need to be in the bigram_counts loop
+        
+        pmi = {}
+        for subj, count in bigram_counts.items():
+            p_bigram = count / tot_tokens
+            p_subj = doc_counts[subj] / tot_tokens
+            PMI = log((p_bigram) / (p_subj * p_verb))
+            pmi[subj] = PMI
+        
+        top_pmi = sorted(   # from pmi dictionary ––> list of tuples!
+            pmi.items(),
+            key = lambda item: item[1],
+            reverse = True
+        )[:10]
 
-
-
-
-
+        print(f"title: {title}")
+        print(f"{[i[0] for i in top_pmi]}")
 
 
 
