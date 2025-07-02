@@ -51,24 +51,6 @@ numpy.random.seed(SEED)
 
 stopwords = set(stopwords.words("english"))
 
-# def my_tokenizer(text: str):
-#     """
-#     - split on whitespaces
-#     - remove puntuation
-#     - remove stopwords
-#     - contractions?!
-#     - lemmatize?!
-#     """
-#     decontracted_text = contractions.fix(text)
-#     tokens = word_tokenize(decontracted_text)
-
-#     return [
-#         word.lower() for word in tokens
-#         if len(word) >2
-#         and word not in stopwords
-#         and word not in punctuation
-#     ]
-
 nlp = spacy.load("en_core_web_sm")
 
 def my_tokenizer(text: str):
@@ -108,7 +90,7 @@ vectorizers = [
         )
     ),
     # (
-    #     "Adding my tokenizer (uni/bi/trigrams)",
+    #     "Using my_tokenizer (uni/bi/trigrams)",
     #     TfidfVectorizer(
     #         stop_words = None,
     #         max_features = 3000,         # slight improvement
@@ -117,7 +99,7 @@ vectorizers = [
     #     )
     # ),
     (
-        "Adding my tokenizer (bi/trigrams)",
+        "Using my_tokenizer (bi/trigrams)",
         TfidfVectorizer(
             stop_words = None,
             max_features = 3000,
@@ -126,7 +108,7 @@ vectorizers = [
         )
     )
     # (
-    #     "Adding my tokenizer (tri/quadrigrams)",
+    #     "Using my_tokenizer (tri/quadrigrams)",
     #     TfidfVectorizer(
     #         stop_words = None,
     #         max_features = 3000,        # too broad!
@@ -162,5 +144,5 @@ for vectorizer in vectorizers:
         pred = model.predict(X_test)
         f1 = metrics.f1_score(y_test, pred, average = "macro")
         print(f"\t• Macro F1 score: {round(f1, 3)}")
-        # print("\n\t• Classification report:\n")
-        # print(metrics.classification_report(y_test, pred, zero_division = 0))
+        print("\n\t• Classification report:\n")
+        print(metrics.classification_report(y_test, pred, zero_division = 0))
