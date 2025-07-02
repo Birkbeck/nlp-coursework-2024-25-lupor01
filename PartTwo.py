@@ -3,9 +3,12 @@ from pathlib import Path
 import random
 import numpy
 import pandas as pd
-import nltk
+from nltk import word_tokenize
+from nltk.corpus import stopwords
 import spacy
 from nltk.stem import WordNetLemmatizer
+from string import punctuation
+import contractions
 
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -47,9 +50,31 @@ SEED = 26
 # random.seed(SEED) #????
 numpy.random.seed(SEED)
 
+stopwords = set(stopwords.words("english"))
+
+def my_tokenizer(text: str):
+    """
+    - split on whitespaces
+    - remove puntuation
+    - remove stopwords
+    - contractions?!
+    - lemmatize?!
+    """
+    decontracted_text = contractions.fix(text)
+    tokens = word_tokenize(decontracted_text)
+
+    return [
+        word.lower() for word in tokens
+        if len(word) >2
+        and word not in stopwords
+        and word not in punctuation
+    ]
+    
+
 vectorizers = [
     ("Unigrams only", TfidfVectorizer(stop_words = "english", max_features = 3000)),
-    ("Unigrams, bigrams and trigrams", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3)))
+    ("Unigrams, bigrams and trigrams", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3))),
+    ("Adding my tokenizer", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3), tokenizer = my_tokenizer))
 ]
 
 models = [
