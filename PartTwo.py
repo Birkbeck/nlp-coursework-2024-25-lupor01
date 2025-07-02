@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import random
+import numpy
 import pandas as pd
 import nltk
 import spacy
@@ -43,7 +44,8 @@ print(df.shape)
 
 
 SEED = 26
-random.seed(SEED)
+# random.seed(SEED) #????
+numpy.random.seed(SEED)
 
 vectorizers = [
     ("Unigrams only", TfidfVectorizer(stop_words = "english", max_features = 3000)),
@@ -56,7 +58,7 @@ models = [
 ]
 
 for vectorizer in vectorizers:
-    print(f"\n{vectorizer[0]}")
+    print(f"\n{vectorizer[0]}".upper())
     features = vectorizer[1].fit_transform(df["speech"])
     labels = df["party"]
 
@@ -65,10 +67,10 @@ for vectorizer in vectorizers:
     )
 
     for name, model in models:
-        print("Modelling with {name}")
+        print(f"\n* Classification with {name}:")
         model.fit(X_train, y_train)
         pred = model.predict(X_test)
         f1 = metrics.f1_score(y_test, pred, average = "macro")
-        print(f"F1 score: {f1}")
-        print("Classification report:\n")
-        print(metrics.classification_report(y_test, pred))
+        print(f"\t• Macro F1 score: {round(f1, 3)}")
+        # print("\n\t• Classification report:\n")
+        # print(metrics.classification_report(y_test, pred, zero_division = 0))
