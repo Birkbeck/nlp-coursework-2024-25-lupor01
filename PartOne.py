@@ -222,9 +222,19 @@ def subjects_by_verb_count(df, verb):
         print(f"{[i[0] for i in frequent_10]}")
 
 
-def subjects_by_verb_pmi(df, target_verb):
+def subjects_by_verb_pmi(df, verb):
     """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
-    pass
+    for _, row in df.iterrows():
+        text = row["text"]
+        title = row["title"]
+        doc = nlp(text)
+
+        doc_counts = Counter(doc)
+        bigram_counts = Counter()
+        verb_counts = Counter()
+
+        for toke in doc:
+            if token.pos_ ==
 
 
 
