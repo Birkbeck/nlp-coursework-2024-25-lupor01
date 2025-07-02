@@ -16,5 +16,20 @@ path_speeches = f"{data_folder}/p2-texts/hansard40000.csv"
 
 df = pd.read_csv(path_speeches)
 
+# print(df.head(5).iloc[:, 1:])
 # print(df.loc[:, ["party", "date", "year"]])
+
+#############################################
+# a)i) renaming labour value to 'Labour' ###
+#############################################
+df["party"] = df["party"].replace({
+    "Labour (Co-op)": "Labour"
+})
+
+
+
+
+
+
+
 
