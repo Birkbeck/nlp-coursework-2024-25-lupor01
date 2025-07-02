@@ -94,7 +94,7 @@ def my_tokenizer(text: str):
 vectorizers = [
     # ("Unigrams only", TfidfVectorizer(stop_words = "english", max_features = 3000)),
     # ("Unigrams, bigrams and trigrams", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3))),
-    ("Adding my tokenizer", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3), tokenizer = my_tokenizer))
+    ("Adding my tokenizer", TfidfVectorizer(stop_words = "english", max_features = 3000, ngram_range = (1, 3), tokenizer = my_tokenizer)),
 ]
 
 models = [
