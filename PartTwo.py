@@ -32,5 +32,7 @@ df = df[df["party"] != "Speaker"]
 df = df[df["speech_class"] == "Speech"]
 
 
+# a)iv) removing rows where text < 1000 characters
+df = df[df["speech"].str.len() >= 1000]
 
 print(df.shape)
