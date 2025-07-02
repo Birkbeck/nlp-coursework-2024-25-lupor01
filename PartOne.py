@@ -258,7 +258,7 @@ def subjects_by_verb_pmi(df, verb):
             p_bigram = count / tot_tokens
             p_subj = doc_counts[subj] / tot_tokens
             PMI = log((p_bigram) / (p_subj * p_verb))
-            pmi[subj] = PMI
+            pmi[subj] = round(PMI, 4)
         
         top_pmi = sorted(   # from pmi dictionary ––> list of tuples!
             pmi.items(),
