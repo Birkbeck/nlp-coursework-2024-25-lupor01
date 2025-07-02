@@ -22,17 +22,21 @@ df["party"] = df["party"].replace({
 })
 
 
-# a)ii) removing rows where value in party col != top 4 parties and removing 'Speaker' value. 
+# a)ii) removing rows where value in party col != top 4 parties and removing 'Speaker' value.
+# print(df["party"].unique()) 
+
 top_4 = df["party"].value_counts().head(4).index
 df = df[df["party"].isin(top_4)]
 df = df[df["party"] != "Speaker"]
 
 
 # a)iii) keeping only rows where 'speech_class' == 'Speech'
+# print(df["speech_class"].unique()) # ok, classes are clean
 df = df[df["speech_class"] == "Speech"]
 
 
 # a)iv) removing rows where text < 1000 characters
 df = df[df["speech"].str.len() >= 1000]
+
 
 print(df.shape)
