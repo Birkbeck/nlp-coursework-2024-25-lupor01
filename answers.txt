@@ -10,14 +10,16 @@ number as a proxy for word difficulty. Longer words tend to refer to more
 complex concepts. However, this is not always true.
 Higer-level words may be short – e.g., forte, leer, prone - whereas
 longer words may be relatively well-known – e.g., democracy, consequence.
+//the above word examples were taken at 1// 
 Poetry and technical content rich in uncommon short words might yield low FK,
-while actually simple texts with lots of common long words may score higher. 
+while actually simple texts with lots of common long words may score higher.
 
 Secondly, FK may be unrealiable when analysing transcribed speech. The formula
 relies on number of sentences, and when punctuation is added a posteriori,
 it influences the resulting estimation. In fact, the same text will correspond
 to different FK scores depending on punctuation choices – i.e., resulting 
 sentence length.
+
 
 ##################################################################################
 ##################################################################################
@@ -40,7 +42,7 @@ def my_tokenizer(text: str):
 This is a simple tokenizer inspired by TfidfVectorizer's default processing.
 The default setting recognises tokens based on the regular expression r”(?u)\b\w\w+\b”,
 indicating as token any group of two or more unicode (alphanumeric) characters.
-Punctuation is always treated as a token separator and ignored. For my_tokenizer,
+Punctuation is always treated as a token separator and ignored //2//. For my_tokenizer,
 I used the same principles but added better language understanding to
 handle contractions. contractions.fix() was used to expand abbreviations, while spacy.nlp
 allowed to easily remove punctuation, stopwords, numeric characters and one-character tokens in general.
@@ -52,3 +54,10 @@ only consider bi to trigrams. Focussing on broader n-gram configurations allows 
 capture more sentence-level structure. Better classification for both RandomForest
 and SVC might mean that single words are too noisy for this specific task, and 
 wider context may be more meaningful for speech classification based on political party.
+
+
+1. Freelance, M. (2021) The Flesch-Kincaid Test is Flawed and We should Stop Using It.
+Available at: https://www.myersfreelance.com/the-flesch-kincaid-test-is-flawed-and-we-should-stop-using-it/
+
+2. Scikit-learn (2025) TfidfVectorizer. Available at:
+https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html
