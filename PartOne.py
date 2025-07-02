@@ -21,8 +21,71 @@ nlp = spacy.load("en_core_web_sm")
 nlp.max_length = 2000000
 
 
-def fk_level(df):
+def read_novels(pathway):
+    """ creates a pd.DataFrame as specified in the assignment"""
+    ## I started working on the coursework before checking the template on git.
+    ## I tried using Path.cwd, but it didn't seem to work for me,
+    ## so I kept my original version – it just requires the explicit pathway.
     
+    files = glob.glob(os.path.join(pathway, "*.txt"))
+
+    texts, titles, authors, years = [], [], [], []
+
+    for file in files:
+        with open(file, "r", encoding = "utf-8") as text:
+            texts.append(text.read())
+        filename = os.path.basename(file)
+        filename = filename.rsplit(".", 1) [0]
+        components = filename.split("-")  # title[0], author[1], year[2]
+
+        titles.append(components[0].replace("_", " "))
+        authors.append(components[1])
+        years.append(components[2])
+    
+    data = {
+        "text": texts,
+        "title": titles,
+        "author": authors,
+        "year": years
+    }
+
+    df = pd.DataFrame(data)  # earliest first!!
+
+    return df.sort_values(by = "year", ascending = True) 
+
+
+
+def nltk_ttr(text):
+    """
+    Calculates the type-token ratio of a text. Text is tokenized using nltk.word_tokenize.
+    """
+    tokens = word_tokenize(text)
+    tokens = [
+        token.lower() for token in tokens
+        if token not in punctuation
+    ]
+
+    tot_tokens = len(tokens)
+    unique_tokens = len(set(tokens))
+    return round(unique_tokens/tot_tokens, 3)
+
+
+
+def get_ttrs(df):
+    """helper function to add ttr to a dataframe"""
+    results = {}
+    for i, row in df.iterrows():
+        results[row["title"]] = nltk_ttr(row["text"])
+    return results
+
+
+
+def fk_level(df):
+    """
+    Print the Flesch-Kincaid scores per novel from a pd.DataFrame.
+    The Flesch-Kincaid formula used here is
+    FK = .39 * (tot_words / tot_sentences) + 11.8 * (tot_syllables/tot_words) - 15.59
+    """
     cmu = cmudict.dict()
 
     flesch_dict = {}
@@ -54,46 +117,15 @@ def fk_level(df):
     return flesch_dict
 
 
-## I started working on the coursework before seeing the template on git.
-## I tried using Path.cwd, but it does not seem to work for me,
-## so I stuck to my original version – it just requires the explicit pathway.
-def read_novels(pathway): 
-
-    files = glob.glob(os.path.join(pathway, "*.txt"))
-
-    texts, titles, authors, years = [], [], [], []
-
-    for file in files:
-        with open(file, "r", encoding = "utf-8") as text:
-            texts.append(text.read())
-        filename = os.path.basename(file)
-        filename = filename.rsplit(".", 1) [0]
-        components = filename.split("-")  # title[0], author[1], year[2]
-
-        titles.append(components[0].replace("_", " "))
-        authors.append(components[1])
-        years.append(components[2])
-    
-    data = {
-        "text": texts,
-        "title": titles,
-        "author": authors,
-        "year": years
-    }
-
-    df = pd.DataFrame(data)  # earliest first!!
-
-    return df.sort_values(by = "year", ascending = True) 
-
-# print(read_novels(path_novels).loc[:, ["title", "year"]])
 
 def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pkl"):
-    """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
-    the resulting  DataFrame to a pickle file"""
+    """
+    Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
+    the resulting  DataFrame to a pickle (.pkl) file
+    """
     df["tokens"] = df["text"].apply(nlp.tokenizer)
     
-    # need to make sure the directory exists
-    store_path.mkdir(parents = True, exist_ok = True)
+    store_path.mkdir(parents = True, exist_ok = True) # need to make sure the directory exists!
 
     with open(store_path/out_name, "wb") as file:
         pickle.dump(df, file)
@@ -101,61 +133,12 @@ def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pkl"):
     return df
 
 
-def nltk_ttr(text):
-    """Calculates the type-token ratio of a text. Text is tokenized using nltk.word_tokenize."""
-    tokens = word_tokenize(text)
-    tokens = [
-        token.lower() for token in tokens
-        if token not in punctuation
-    ]
-
-    tot_tokens = len(tokens)
-    unique_tokens = len(set(tokens))
-    return round(unique_tokens / tot_tokens, 3)
-
-
-def get_ttrs(df):
-    """helper function to add ttr to a dataframe"""
-    results = {}
-    for i, row in df.iterrows():
-        results[row["title"]] = nltk_ttr(row["text"])
-    return results
-
-
-# def get_fks(df):
-#     """helper function to add fk scores to a dataframe"""
-#     results = {}
-#     cmudict = nltk.corpus.cmudict.dict()
-#     for i, row in df.iterrows():
-#         results[row["title"]] = round(fk_level(row["text"], cmudict), 4)
-#     return results
 
 def object_counts(df):
-    """Extracts the most common syntactic objects in parsed documents from pd.DataFrame"""
-    # for _, row in df.iterrows():
-    #     text = row["text"]
-    #     title = row["title"]
-    #     tokens = nlp(text)  # make sure nlp is defined!
-
-    #     counts = {}
-    #     for token in tokens:
-    #         if token.dep_ == "dobj": 
-    #             obj = token.text.lower()
-    #             if obj in counts:
-    #                 counts[obj] += 1
-    #             else:
-    #                 counts[obj] = 1
-        
-    #     most_frequent = sorted(
-    #         counts.items(),
-    #         key = lambda item: item[1],
-    #         reverse = True
-    #     )[:10]
-
-    #     print(f"title: {title}")
-    #     print(f"most frequent objects (raw counts): {most_frequent}")
-
-    # more streamlined method??
+    """
+    Extracts the most common syntactic objects in parsed documents from pd.DataFrame
+    """
+ 
     for _, row in df.iterrows():
         text = row["text"]
         title = row["title"]
@@ -170,8 +153,14 @@ def object_counts(df):
 
 
 def standardised_verb(v):
-        """ helper fuction for subjects_by_verb_count and subjects_by_verb_pmi"""
-        if v.startswith("to "):      # useless here..but slightly more robust
+        """
+        Helper fuction for subjects_by_verb_count and subjects_by_verb_pmi.
+        It normalises the input verb form to a standard form, so that different
+        forms of 'hear' are processable (e.g., 'to hear', 'Hear', 'hearing')
+        ..useless here, but slightly more robust
+        """
+        
+        if v.startswith("to "):
             v = v[3:]
         doc = nlp(v)
         verb = doc[0]
@@ -179,7 +168,9 @@ def standardised_verb(v):
 
 
 def subjects_by_verb_count(df, verb):
-    """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
+    """
+    it prints the most common subjects of a given verb in a parsed document from a pd.DataFrame.
+    """
     
     st_verb = standardised_verb(verb)
 
@@ -210,7 +201,9 @@ def subjects_by_verb_count(df, verb):
 
 
 def subjects_by_verb_pmi(df, verb):
-    """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
+    """
+    it prints the most common subjects of a given verb in a parsed document by PMI
+    """
     
     st_verb = standardised_verb(verb)
     
@@ -258,28 +251,39 @@ def subjects_by_verb_pmi(df, verb):
 
 if __name__ == "__main__":
     """
-    uncomment the following lines to run the functions once you have completed them
+    insert own pathway ⛔️
     """
     data_folder = "/Users/rick/Desktop/MSc/4 - NLP/0, assessment"
     path_novels = f"{data_folder}/p1-texts/novels"
 
     print(path_novels)
-    # df = read_novels(path_novels) # this line will fail until you have completed the read_novels function above.
-    # print(df.head(5))
-    # # nltk.download("cmudict")
-    # parse(df)
-    # print(df.head())
-    # print(get_ttrs(df))
-    # print(fk_level(df))
-    df_final = pd.read_pickle(Path.cwd() / "pickles" /"parsed.pkl")
-    print(df_final.head(3))  # delete when you're done ⛔️
+    df = read_novels(path_novels) # this line will fail until you have completed the read_novels function above.
     
-    print(f"\nMost common syntactic objects per novel")
+    print("\nFirst 5 rows of the dataframe")
+    print(df.head(5))
+    # nltk.download("cmudict")
+    
+    print("\nJust about to parse().. returning a df with parsed text")
+    df = parse(df)
+
+    print("\nFirst 5 rows of the new df")
+    print(df.head(5))
+
+    print("\nMapping each novel to its type-token ratio\n")
+    print(get_ttrs(df))
+    print("\n\n")
+    print(fk_level(df))
+
+    print("\nLoading pickle.pkl file\n")
+    df_final = pd.read_pickle(Path.cwd() / "pickles" /"parsed.pkl")
+    print("\n.pkl load successfully!\n")
+    
+    print(f"\nMost common syntactic objects per novel:")
     object_counts(df_final)
     
-    print("\nMost common subjects of the verb 'to hear', per novel, by descending frequency")
+    print("\nMost common subjects of the verb 'to hear', per novel, by descending frequency:")
     subjects_by_verb_count(df_final, 'hear')
 
-    print("\nMost common subjects of the verb 'to hear', per novel, by descending PMI")
+    print("\nMost common subjects of the verb 'to hear', per novel, by descending PMI:")
     subjects_by_verb_pmi(df_final, 'hear')
 
