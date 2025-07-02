@@ -125,7 +125,7 @@ def nltk_ttr(text):
 
     tot_tokens = len(tokens)
     unique_tokens = len(set(tokens))
-    return unique_tokens / tot_tokens
+    return round(unique_tokens / tot_tokens, 3)
 
 
 def get_ttrs(df):
