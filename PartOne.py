@@ -257,7 +257,7 @@ if __name__ == "__main__":
     path_novels = f"{data_folder}/p1-texts/novels"
 
     print(path_novels)
-    
+    print("\nexercise a)\n")
     df = read_novels(path_novels) # this line will fail until you have completed the read_novels function above.
     
     print("\nFirst 5 rows of the dataframe")

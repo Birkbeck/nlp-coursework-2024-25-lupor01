@@ -3,12 +3,10 @@ from pathlib import Path
 import random
 import numpy
 import pandas as pd
-from nltk import word_tokenize
+# from nltk import word_tokenize
 from nltk.corpus import stopwords
 import spacy
-from nltk.stem import WordNetLemmatizer
 from string import punctuation
-import contractions
 
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer

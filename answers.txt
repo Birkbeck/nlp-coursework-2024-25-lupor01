@@ -1,6 +1,19 @@
 Answers to the text questions go here.
 
 PART 1, Flesch-Kincaid
-poetry, jargon, short but diffilult words, long but easy words
+Firstly, FK may produce poor estimates due to the unreliability of syllable
+number as a proxy for word difficulty. Longer words tend to refer to more
+complex concepts. However, this is not always true.
+Higer-level words may be short – e.g., forte, leer, prone - whereas
+longer words may be relatively well-known – e.g., democracy, consequence.
+Poetry and technical content rich in uncommon short words might yield low FK,
+while actually simple texts with lots of common long words may score higher. 
+
+Secondly, FK may be unrealiable when analysing transcribed speech. The formula
+relies on number of sentences, and when punctuation is added a posteriori,
+it influences the resulting estimation. In fact, the same text will correspond
+to different FK scores depending on punctuation choices – i.e., resulting 
+sentence length.
+
 
 PART 2, my_tokenizer
